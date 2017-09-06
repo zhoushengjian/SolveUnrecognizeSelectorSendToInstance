@@ -522,6 +522,7 @@
 				5A068B8E1F40850F00D45358 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5A068B8F1F40850F00D45358 /* Build configuration list for PBXNativeTarget "消息转发解决方法找不到Tests" */ = {
 			isa = XCConfigurationList;
@@ -530,6 +531,7 @@
 				5A068B911F40850F00D45358 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5A068B921F40850F00D45358 /* Build configuration list for PBXNativeTarget "消息转发解决方法找不到UITests" */ = {
 			isa = XCConfigurationList;
@@ -538,6 +540,7 @@
 				5A068B941F40850F00D45358 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

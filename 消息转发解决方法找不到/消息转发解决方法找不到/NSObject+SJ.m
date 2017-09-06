@@ -40,10 +40,14 @@
 @implementation NSObject (SJ)
 
 + (void)load {
+    //替换快速转发方法  将消息转发给一个自己的对象  然后重启消息转发 在自己类的转发过程把方法实现加上
+//    [self methodChange:@selector(forwardingTargetForSelector:) mySel:@selector(sj_forwardingTargetForSelector:) isIntance:YES];
     
-    [self methodChange:@selector(forwardingTargetForSelector:) mySel:@selector(sj_forwardingTargetForSelector:) isIntance:YES];
-    
+    //尝试2：这样会奔溃  可能会替换掉很多系统的实现 不可取
 //    [self methodChange:@selector(resolveInstanceMethod:) mySel:@selector(sj_resolveInstanceMethod:) isIntance:NO];
+    
+    //尝试3：通过自己的类给方法返回一个签名  让消息走到常规转发 然后实现常规转发方法 吞掉这个消息
+    [self methodChange:@selector(methodSignatureForSelector:) mySel:@selector(sj_methodSignatureForSelector:) isIntance:YES];
 }
 
 
@@ -51,11 +55,11 @@
     NSLog(@"我解决了奔溃，%s", __func__);
 }
 
-- (void)bbb {
+- (void)replcingSel {
     NSLog(@"我解决了奔溃，%s", __func__);
 }
 
-//尝试2：这样会奔溃  可能会替换掉很多系统的实现 不可取
+
 /**
 + (BOOL)sj_resolveInstanceMethod:(SEL)sel {
     
@@ -68,14 +72,17 @@
 
 - (id)sj_forwardingTargetForSelector:(SEL)selector {
     
-    //尝试3： 类似于尝试1  会导致代替的方法调用两次
-//    class_replaceMethod([self class], selector, class_getMethodImplementation([self class], @selector(bbb)), method_getTypeEncoding(class_getInstanceMethod([self class], @selector(bbb))));
-//    return [NSObject new];
-    
-    
     return [SJClass new];
 }
 
+- (NSMethodSignature *)sj_methodSignatureForSelector:(SEL)sel {
+    
+    return [self sj_methodSignatureForSelector:@selector(replcingSel)];
+}
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
+    NSLog(@"消息被吞掉：%s", __func__);
+}
 
 + (void)methodChange:(SEL)originSel mySel:(SEL)mySel isIntance:(BOOL)isInstance {
     
@@ -98,6 +105,5 @@
         method_exchangeImplementations(originMethod, myMethod);
     }
 }
-
 
 @end
